@@ -1,0 +1,69 @@
+name: Build test
+
+on:
+  workflow_dispatch:
+  watch:
+    types: [started]
+
+defaults:
+  run:
+    shell: bash
+
+env:
+   TZ: Asia/Jakarta
+
+jobs:
+  buildtest:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 5
+
+      - name: Install Packages
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            dialog bash sed wget git curl zip tar jq expect make cmake automake autoconf \
+            llvm lld lldb clang gcc binutils bison perl gperf gawk flex bc python2 python3 zstd \
+            openssl unzip cpio build-essential ccache liblz4-tool libsdl1.2-dev libstdc++6 \
+            libxml2 libxml2-utils lzop pngcrush schedtool squashfs-tools xsltproc zlib1g-dev \
+            libncurses5-dev bzip2 gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf \
+            gcc-arm-linux-gnueabi dos2unix kmod
+
+      - name: Setup GCC 4.9 Toolchain
+        run: |
+          git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git linegcc49
+
+      - name: Setup KernelSU (Legacy)
+        run: |
+         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
+         
+
+      - name: Start Build
+        run: |
+          bash build.sh
+
+      - name: Upload AnyKernel Zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: anykernel-zip
+          path: AnyKernel/*.zip
+
+      - name: Upload Kernel Image
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-gz
+          path: out/arch/arm64/boot/Image.gz
+
+      - name: Upload DTB
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-gz-dtb
+          path: out/arch/arm64/boot/Image.gz-dtb
+          
