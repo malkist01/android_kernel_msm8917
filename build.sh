@@ -94,7 +94,7 @@ build_kernel() {
     echo -e "$yellow[+] Building kernel...$white"
 
     rm -rf out
-    make O=out ARCH=arm64 rolex_defconfig || {
+    make O=out ARCH=arm64 j6primelte_defconfig || {
         get_toolchain_info
         send_telegram_error "Defconfig failed"
         exit 1
