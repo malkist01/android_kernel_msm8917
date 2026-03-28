@@ -45,7 +45,7 @@ jobs:
           curl -LSs "https://raw.githubusercontent.com/malkist01/KernelSU/refs/heads/master/kernel/setup.sh" | bash -s master
           curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/syscall_hook_patches.sh" | bash -s
           curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/backport_patches.sh" | bash -s
-
+          curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/refs/heads/mainline/Patches/backport_selinux_patches.sh" | bash -s
       - name: Start Build
         run: |
           bash build.sh
